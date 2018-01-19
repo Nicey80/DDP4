@@ -54,6 +54,10 @@ em {
     background-position: 90% 10%;
     <!-- background-color: #FFFFFF; /* #EDE0CF; ; #CA9F9D*/ -->
 }
+.r {
+    font-size: 10px
+}
+
 </style>
 
 <h2>App Overview</h2>
@@ -81,10 +85,10 @@ see the impact on the key metrics</p>
 
 <slide class="" id="slide-2" style="background:;">
   <hgroup>
-    <h2>Plan Summary</h2>
+    <h2>Key Components</h2>
   </hgroup>
   <article data-timings="">
-    <h3>Key Features</h3>
+    <h3>Plan Summary</h3>
 
 <ul>
 <li>Houses the live plan</li>
@@ -92,13 +96,12 @@ see the impact on the key metrics</p>
 <li>Visualise the impact of the changes and convert into a scenario if required</li>
 </ul>
 
-<h3>Instructions</h3>
+<h3>Scenario Planning</h3>
 
-<p>To review and amend the plan first click the execute button to load the current plan data.
-The graph should load showing the current profile of the chosen metric.
-To change the plan go into the plan detail section and click on the header &#39;Edit Plan&#39;
-Edit data in the Campaign Plan tab by clicking on the relevant cell and overtyping the value. This alos brings up thhe send plan in the window to the right which can also be modified on the same way.
-When you&#39;ve finsihed updating the details hit the Update plot button to see the impact of the changes</p>
+<ul>
+<li>Allows the user to compare in graph or table form the relative impacts of multiple scenarios</li>
+<li>Allows the user to create new scenarios based on the existing plans</li>
+</ul>
 
   </article>
   <!-- Presenter Notes -->
@@ -106,19 +109,26 @@ When you&#39;ve finsihed updating the details hit the Update plot button to see 
 
 <slide class="" id="slide-3" style="background:;">
   <hgroup>
-    <h2>Scenario Planning</h2>
+    <h2>Sample Code</h2>
   </hgroup>
   <article data-timings="">
-    <ul>
-<li>Allows the user to compare in graph or table form the relative impacts of multiple scenarios</li>
-</ul>
+    <pre><code class="r">library(readxl)
+library(tidyverse)
 
-<h3>Instructions</h3>
+DT1 &lt;- read_excel(&quot;InitCampDB.xlsx&quot;, sheet=1)
+DT2 &lt;- read_excel(&quot;InitCampDB.xlsx&quot;, sheet=2)
 
-<ul>
-<li>Click Exectute to load the available scenarios for the chosen area. (Note data is only available for the default area Area1 for the prototype)</li>
-<li>Using the Select Input Select the scenarios to review and in the checkbox input select the metric and the graph should propulate showing the different scenarios</li>
-</ul>
+DT &lt;- left_join(DT1, DT2, by=&quot;ForecastID&quot;)
+
+DT &lt;- DT %&gt;%
+    group_by(ForecastID) %&gt;%
+    summarise(Total_Vol = sum(`Batch Vol`))
+
+p &lt;- ggplot(DT)+
+    geom_col(aes(ForecastID, Total_Vol, fill=as.factor(ForecastID)))
+
+p+ggtitle(&quot;Total Send Volume per scenario&quot;)
+</code></pre>
 
 <p><img src="assets/fig/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1"></p>
 
@@ -157,13 +167,13 @@ When you&#39;ve finsihed updating the details hit the Update plot button to see 
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='Plan Summary'>
+        data-slide=2 title='Key Components'>
          2
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Scenario Planning'>
+        data-slide=3 title='Sample Code'>
          3
       </a>
     </li>

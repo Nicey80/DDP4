@@ -21,6 +21,10 @@ em {
     background-position: 90% 10%;
     <!-- background-color: #FFFFFF; /* #EDE0CF; ; #CA9F9D*/ -->
 }
+.r {
+    font-size: 10px
+}
+
 </style>
 
 
@@ -45,32 +49,44 @@ see the impact on the key metrics
 
 
 --- 
-## Plan Summary
+## Key Components
 
 
-### Key Features
+### Plan Summary
 - Houses the live plan
 - Allows the user to easily modify the current plan. Send Dates, Response Rates, Conversion Rates
 - Visualise the impact of the changes and convert into a scenario if required
 
+### Scenario Planning
 
-### Instructions
-To review and amend the plan first click the execute button to load the current plan data.
-The graph should load showing the current profile of the chosen metric.
-To change the plan go into the plan detail section and click on the header 'Edit Plan'
-Edit data in the Campaign Plan tab by clicking on the relevant cell and overtyping the value. This alos brings up thhe send plan in the window to the right which can also be modified on the same way.
-When you've finsihed updating the details hit the Update plot button to see the impact of the changes
+- Allows the user to compare in graph or table form the relative impacts of multiple scenarios
+- Allows the user to create new scenarios based on the existing plans
+
 
 
 ---
 
-## Scenario Planning
+## Sample Code
 
-- Allows the user to compare in graph or table form the relative impacts of multiple scenarios
 
-### Instructions
-- Click Exectute to load the available scenarios for the chosen area. (Note data is only available for the default area Area1 for the prototype)
-- Using the Select Input Select the scenarios to review and in the checkbox input select the metric and the graph should propulate showing the different scenarios
+```r
+library(readxl)
+library(tidyverse)
+
+DT1 <- read_excel("InitCampDB.xlsx", sheet=1)
+DT2 <- read_excel("InitCampDB.xlsx", sheet=2)
+
+DT <- left_join(DT1, DT2, by="ForecastID")
+
+DT <- DT %>%
+    group_by(ForecastID) %>%
+    summarise(Total_Vol = sum(`Batch Vol`))
+
+p <- ggplot(DT)+
+    geom_col(aes(ForecastID, Total_Vol, fill=as.factor(ForecastID)))
+
+p+ggtitle("Total Send Volume per scenario")
+```
 
 ![plot of chunk unnamed-chunk-1](assets/fig/unnamed-chunk-1-1.png)
 
